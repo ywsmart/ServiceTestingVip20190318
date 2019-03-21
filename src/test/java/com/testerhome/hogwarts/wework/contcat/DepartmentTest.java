@@ -2,6 +2,8 @@ package com.testerhome.hogwarts.wework.contcat;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvFileSource;
 
 import java.util.HashMap;
 
@@ -54,8 +56,16 @@ class DepartmentTest {
     }
 
     @Test
-    void creatWithChinese() {
+    void createWithChinese() {
         department.creat("测试部门test" + random, "1").then().body("errcode", equalTo(0));
+    }
+
+    // 参数化加断言状态码
+    @ParameterizedTest
+    @CsvFileSource(resources = "/data/com/testerhome/hogwarts/wework/contcat/createWithDup.csv")
+    void createWithDup(String name, Integer expectCode){
+        department.creat(name+random,"1").then().body("errcode",equalTo(0));
+        department.creat(name+random,"1").then().body("errcode",equalTo(expectCode));
     }
 
     @Test
