@@ -95,4 +95,11 @@ class DepartmentTest {
         department.creat("testDelete" + random, "1", "99").then().body("errcode", equalTo(0));
         department.delete("99").then().body("errcode", equalTo(0));
     }
+
+    // 简单示意动态调用，api.json里面写着对应的方法
+    @Test
+    void updateAll(){
+        HashMap<String,Object> map=new HashMap<>();
+        department.api("api.json",map).then().statusCode(200);
+    }
 }

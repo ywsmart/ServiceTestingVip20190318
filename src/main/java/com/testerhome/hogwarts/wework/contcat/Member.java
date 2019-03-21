@@ -62,4 +62,47 @@ public class Member extends Contact {
                 .then().log().all().extract().response();
     }
 
+    public Response list(String department_id, String fetch_child){
+        reset();
+        return requestSpecification
+                .queryParam("department_id",department_id)
+                .queryParam("fetch_child",fetch_child)
+                .when().get("https://qyapi.weixin.qq.com/cgi-bin/user/list")
+                .then().log().all().extract().response();
+    }
+
+    public Response convertToOpenid1(String userid) {
+        reset();
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("userid", userid);
+        String body = template("/data/com/testerhome/hogwarts/wework/contcat/converttoopenid1.json", map);
+        return requestSpecification.body(body)
+                .when().post("https://qyapi.weixin.qq.com/cgi-bin/user/convert_to_openid")
+                .then().log().all().extract().response();
+    }
+
+    public Response convertToOpenid2(String openid) {
+        reset();
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("openid", openid);
+        String body = template("/data/com/testerhome/hogwarts/wework/contcat/converttoopenid2.json", map);
+        return requestSpecification.body(body)
+                .when().post("https://qyapi.weixin.qq.com/cgi-bin/user/convert_to_openid")
+                .then().log().all().extract().response();
+    }
+
+    // 待完善
+    public void authsucc(){
+
+    }
+
+    public Response invite(HashMap<String, Object> map){
+        reset();
+        String body = template("/data/com/testerhome/hogwarts/wework/contcat/batchinvite.json", map);
+        return requestSpecification.body(body)
+                .when().post("https://qyapi.weixin.qq.com/cgi-bin/batch/invite")
+                .then().log().all().extract().response();
+    }
+
+
 }

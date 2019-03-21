@@ -30,7 +30,7 @@ public class Restful {
         return requestSpecification.when().request("get", "baidu.com");
     }
 
-    // 读取的json数据用map来改，放在父类，方便调用，或者放在util里也可以
+    // 模板读取。读取的json数据用map来改，放在父类，方便调用，或者放在util里也可以
     public static String template(String path, HashMap<String, Object> map) {
         DocumentContext documentContext = JsonPath.parse(Restful.class
                 .getResourceAsStream(path));
@@ -38,5 +38,45 @@ public class Restful {
             documentContext.set(entry.getKey(), entry.getValue());
         });
         return documentContext.jsonString();
+    }
+
+    public Response templateFromHar( String path, String patten, HashMap<String, Object> map){
+        // todo: 支持从har文件读写接口定义并发送
+        // 从har读取请求，进行更新
+        DocumentContext documentContext = JsonPath.parse(Restful.class
+                .getResourceAsStream(path));
+        map.entrySet().forEach(entry -> {
+            documentContext.set(entry.getKey(), entry.getValue());
+        });
+
+        //示意一下，未完成
+        String method = documentContext.read("method");
+        String url = documentContext.read("url");
+        return requestSpecification.when().request(method,url);
+    }
+
+    public Response templateFromSwagger( String path, String patten, HashMap<String, Object> map){
+        // todo: 支持从swagger自动生成接口定义并发送
+        // 从Swagger读取请求，//示意一下，未完成
+        DocumentContext documentContext = JsonPath.parse(Restful.class
+                .getResourceAsStream(path));
+        map.entrySet().forEach(entry -> {
+            documentContext.set(entry.getKey(), entry.getValue());
+        });
+        String method = documentContext.read("method");
+        String url = documentContext.read("url");
+        return requestSpecification.when().request(method,url);
+    }
+
+    public Response templateFromYaml(String path,HashMap<String ,Object> map){
+        // todo: 根据yaml生成接口定义并发送
+        return null;
+    }
+
+    // todo：支持wsdl soap
+
+    public Response api(String path, HashMap<String,Object> map){
+        // todo: 动态调用各
+        return null;
     }
 }

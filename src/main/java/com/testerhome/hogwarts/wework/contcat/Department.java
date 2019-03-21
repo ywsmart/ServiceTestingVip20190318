@@ -195,6 +195,14 @@ public class Department extends Contact {
 
     }
 
+    // 待完善，重构update，根据抓包导出的har文件
+    public Response update(HashMap<String, Object> map){
+        // 暂时先写死接口，后面需要从文件读出来
+       return templateFromHar("dome.har.json",
+                "https://work.weixin.qq.com/wework_admin/party?action=addparty",
+               map);
+    }
+
     /**
      * 删除部门
      *
@@ -230,5 +238,9 @@ public class Department extends Contact {
         List<Integer> idList = list("").then().log().all().extract().path("department.id");
 //        System.out.println(idList);
         idList.forEach(id->delete(id.toString()));
+    }
+    public Response updatrAll(HashMap<String ,Object> map){
+        // todo: 待完善
+        return api("api.json",map);
     }
 }

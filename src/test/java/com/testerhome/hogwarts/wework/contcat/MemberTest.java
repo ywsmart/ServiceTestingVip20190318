@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvFileSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.ArrayList;
@@ -39,6 +40,22 @@ class MemberTest {
         map.put("department", Arrays.asList(1, 2));
         map.put("mobile", "151" + random);
         map.put("alias", newName);
+        map.put("email", random + "@666.com");
+        member.create(map).then().statusCode(200).body("errcode", equalTo(0));
+    }
+
+    // 参数化CSV
+    @ParameterizedTest
+    @CsvFileSource(resources = "/data/com/testerhome/hogwarts/wework/contcat/member.csv")
+    void create(String name,String alias) {
+        String newName = name + member.random;
+        String random = String.valueOf(System.currentTimeMillis()).substring(5 + 0, 5 + 8);
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("userid", newName);
+        map.put("name", newName);
+        map.put("department", Arrays.asList(1, 2));
+        map.put("mobile", "151" + random);
+        map.put("alias", alias);
         map.put("email", random + "@666.com");
         member.create(map).then().statusCode(200).body("errcode", equalTo(0));
     }
@@ -98,7 +115,7 @@ class MemberTest {
         // 先创建一个成员
         member.create(map).then().statusCode(200).body("errcode", equalTo(0));
         // 再删除该成员
-        member.delete(name).then().statusCode(200).body("errcode",equalTo(0));
+        member.delete(name).then().statusCode(200).body("errcode", equalTo(0));
     }
 
     @Test
@@ -128,12 +145,37 @@ class MemberTest {
         List<String> useridList = new ArrayList<>();
         useridList.add(newName);
         useridList.add(newName2);
-        member.batchDelete(useridList).then().statusCode(200).body("errcode",equalTo(0));
+        member.batchDelete(useridList).then().statusCode(200).body("errcode", equalTo(0));
 
     }
 
     @Test
     void simpleList() {
-        member.simpleList("1","1").then().statusCode(200).body("errcode",equalTo(0));
+        member.simpleList("1", "1").then().statusCode(200).body("errcode", equalTo(0));
+    }
+
+    @Test
+    void list() {
+        member.list("1", "1").then().statusCode(200).body("errcode", equalTo(0));
+    }
+
+    @Test
+    void convertToOpenid1() {
+        member.convertToOpenid1("yvan").then().statusCode(200).body("errcode", equalTo(0));
+    }
+
+    @Test
+    void convertToOpenid2() {
+        member.convertToOpenid2("oeCjy01W1_kurL_o7OFDVQQ70Gr0").then().statusCode(200).body("errcode", equalTo(40003));
+    }
+
+    @Test
+    void invite() {
+        List<String> userList = new ArrayList<>();
+        userList.add("BenXiaoy");
+        userList.add("xxxxxxxx");
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("user", userList);
+        member.invite(map).then().statusCode(200).body("errcode", equalTo(0));
     }
 }
