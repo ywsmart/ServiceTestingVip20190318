@@ -112,4 +112,9 @@ class DepartmentTest {
         HashMap<String,Object> map=new HashMap<>();
         department.api("api.json",map).then().statusCode(200);
     }
+
+    @Test
+    void deleteAll(){
+        department.deleteAll();
+    }
 }

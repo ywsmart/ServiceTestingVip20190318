@@ -44,6 +44,7 @@ public class WeworkConfig {
             weworkConfig = load("/conf/WeworkConfig.yaml");
             // 打印了实例对象
             System.out.println(weworkConfig);
+            // 对象的具体参数
             System.out.println(weworkConfig.agentId);
         }
         return weworkConfig;

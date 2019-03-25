@@ -19,13 +19,28 @@ import static io.restassured.RestAssured.given;
  */
 public class Department extends Contact {
 
+
+    /**
+     * 从yaml读取api参数，重构list方法
+     *
+     * @param id
+     * @return
+     */
+    public Response list(String id) {
+        reset();
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        map.put("id",id);
+        return templateFromYaml("/api/list.yaml",map);
+    }
+
+
     /**
      * 发送引擎封装后，优化代码
      *
      * @param id
      * @return
      */
-    public Response list(String id) {
+    public Response list1(String id) {
         Response response = requestSpecification
                 .param("id", id)
                 .when().get("https://qyapi.weixin.qq.com/cgi-bin/department/list")
@@ -228,7 +243,8 @@ public class Department extends Contact {
         return requestSpecification
                 .queryParam("id", id)
                 .when().post("https://qyapi.weixin.qq.com/cgi-bin/department/delete")
-                .then().extract().response();
+                .then().log().all()
+                .extract().response();
 
     }
 
