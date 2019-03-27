@@ -1,0 +1,7 @@
+method: post
+url: https://qyapi.weixin.qq.com/cgi-bin/department/update
+query:
+  name: 广州研发中心
+  parentid: 1
+  order: 1
+  id: null

@@ -27,7 +27,6 @@ public class Department extends Contact {
      * @return
      */
     public Response list(String id) {
-        reset();
         HashMap<String, Object> map = new HashMap<String, Object>();
         map.put("id",id);
         return templateFromYaml("/api/list.yaml",map);
@@ -41,11 +40,10 @@ public class Department extends Contact {
      * @return
      */
     public Response list1(String id) {
-        Response response = requestSpecification
+        Response response = getDefaultRequestSpecification()
                 .param("id", id)
                 .when().get("https://qyapi.weixin.qq.com/cgi-bin/department/list")
                 .then().extract().response();
-        reset();
         return response;
     }
 
@@ -111,17 +109,27 @@ public class Department extends Contact {
      * @param parentid 父类ID
      * @return 请求返回
      */
-    public Response creat(String name, String parentid) {
-        reset();
+    public Response create1(String name, String parentid) {
         String body = JsonPath.parse(this.getClass()
                 .getResourceAsStream("/data/com/testerhome/hogwarts/wework/contcat/create.json"))
                 .set("$.name", name)
                 .set("parentid", parentid)
                 .jsonString();
-        return requestSpecification
+        return getDefaultRequestSpecification()
                 .body(body)
                 .when().post("https://qyapi.weixin.qq.com/cgi-bin/department/create")
                 .then().extract().response();
+    }
+
+    /**
+     * 优化代码，从yaml读取api文件
+     * 通过hashmap来添加参数，模板里的非必填参数都可是null
+     *
+     * @return 请求的返回
+     */
+    public Response create(HashMap<String, Object> map){
+        map.put("_file","/data/com/testerhome/hogwarts/wework/contcat/create.json");
+        return templateFromYaml("/api/create.yaml",map);
     }
 
     /**
@@ -129,14 +137,13 @@ public class Department extends Contact {
      *
      * @return 请求的返回
      */
-    public Response creat(HashMap<String, Object> map){
-        reset();
+    public Response create1(HashMap<String, Object> map){
         DocumentContext documentContext = JsonPath.parse(this.getClass()
                 .getResourceAsStream("/data/com/testerhome/hogwarts/wework/contcat/create.json"));
         map.entrySet().forEach(entry->{
             documentContext.set(entry.getKey(),entry.getKey());
         });
-        return requestSpecification
+        return getDefaultRequestSpecification()
                 .body(documentContext.jsonString())
                 .when().post("https://qyapi.weixin.qq.com/cgi-bin/department/create")
                 .then().extract().response();
@@ -150,7 +157,7 @@ public class Department extends Contact {
      * @param id       部门id
      * @return 请求返回
      */
-    public Response creat(String name, String parentid, String id) {
+    public Response create(String name, String parentid, String id) {
         // 利用JsonPath来读取json并替换参数，模板也需要对于包名
         String body = JsonPath.parse(this.getClass()
                 .getResourceAsStream("/data/com/testerhome/hogwarts/wework/contcat/create.json"))
@@ -164,6 +171,25 @@ public class Department extends Contact {
                 .body(body)
                 .when().post("https://qyapi.weixin.qq.com/cgi-bin/department/create")
                 .then().log().all().statusCode(200).extract().response();
+    }
+
+    /**
+     * 优化代码，从yaml读取api文件
+     *
+     * @return 请求的返回
+     */
+    public Response create(String name,String parentid){
+        // 让用例很清晰
+        HashMap<String, Object> map = new HashMap<>();
+        // 一步到位指定，省去下列两行代码
+        map.put("_file","/data/com/testerhome/hogwarts/wework/contcat/create.json");
+        map.put("name",name);
+        map.put("parentid",parentid);
+        // 读数据
+//        String body = template("/data/com/testerhome/hogwarts/wework/contcat/create.json",map);
+//        map.put("_body",body);
+        return templateFromYaml("/api/create.yaml",map)
+        ;
     }
 
     /**
@@ -196,23 +222,37 @@ public class Department extends Contact {
      * @param name 更新的name
      * @return 请求返回
      */
-    public Response update(String id, String name) {
-        reset();
+    public Response update1(String id, String name) {
         String body = JsonPath.parse(this.getClass()
                 .getResourceAsStream("/data/com/testerhome/hogwarts/wework/contcat/update.json"))
                 .set("$.id", id)
                 .set("name", name)
                 .jsonString();
-        return requestSpecification
+        return getDefaultRequestSpecification()
                 .body(body)
                 .when().post("https://qyapi.weixin.qq.com/cgi-bin/department/update")
                 .then().extract().response();
 
     }
+    /**
+     * 更新,优化代码,从yaml读取api文件
+     *
+     * @param id   必填参数部门id
+     * @param name 更新的name
+     * @return 请求返回
+     */
+    public Response update(String id, String name) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("_file","/data/com/testerhome/hogwarts/wework/contcat/update.json");
+        map.put("name",name);
+        map.put("id",id);
+        return templateFromYaml("/api/update.yaml",map);
+    }
 
     // 待完善，重构update，根据抓包导出的har文件
     public Response update(HashMap<String, Object> map){
         // 暂时先写死接口，后面需要从文件读出来
+        // todo：
        return templateFromHar("dome.har.json",
                 "https://work.weixin.qq.com/wework_admin/party?action=addparty",
                map);
@@ -238,21 +278,30 @@ public class Department extends Contact {
      * @param id 需删除的部门ID
      * @return 请求返回
      */
-    public Response delete(String id) {
-        reset();
-        return requestSpecification
+    public Response delete1(String id) {
+        return getDefaultRequestSpecification()
                 .queryParam("id", id)
                 .when().post("https://qyapi.weixin.qq.com/cgi-bin/department/delete")
                 .then().log().all()
                 .extract().response();
 
     }
+    /**
+     * 删除部门，优化代码,从yaml读取api文件
+     *
+     * @param id 需删除的部门ID
+     * @return 请求返回
+     */
+    public Response delete(String id) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("id",id);
+        return templateFromYaml("/api/delete.yaml",map);
+    }
 
     // 清理脏数据专用
     public void deleteAll(){
-        reset();
-        List<Integer> idList = list("").then().log().all().extract().path("department.id");
-//        System.out.println(idList);
+        List<Integer> idList = list("").then().extract().path("department.id");
+        System.out.println(idList);
         idList.forEach(id->delete(id.toString()));
     }
     public Response updatrAll(HashMap<String ,Object> map){

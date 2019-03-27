@@ -14,48 +14,42 @@ import java.util.List;
 public class Member extends Contact {
     public Response create(HashMap<String, Object> map) {
         String body = template("/data/com/testerhome/hogwarts/wework/contcat/member.json", map);
-        reset();
-        return requestSpecification.body(body)
+        return getDefaultRequestSpecification().body(body)
                 .when().post("https://qyapi.weixin.qq.com/cgi-bin/user/create")
                 .then().log().all().extract().response();
 
     }
 
     public Response get(String userid) {
-        reset();
-        return requestSpecification.queryParam("userid", userid)
+        return getDefaultRequestSpecification().queryParam("userid", userid)
                 .when().get("https://qyapi.weixin.qq.com/cgi-bin/user/get")
                 .then().log().all().extract().response();
     }
 
     public Response update(HashMap<String, Object> map) {
         String body = template("/data/com/testerhome/hogwarts/wework/contcat/member.json", map);
-        reset();
-        return requestSpecification.body(body)
+        return getDefaultRequestSpecification().body(body)
                 .when().post("https://qyapi.weixin.qq.com/cgi-bin/user/update")
                 .then().log().all().extract().response();
     }
 
     public Response delete(String userid) {
-        reset();
-        return requestSpecification.queryParam("userid", userid)
+        return getDefaultRequestSpecification().queryParam("userid", userid)
                 .when().get("https://qyapi.weixin.qq.com/cgi-bin/user/delete")
                 .then().log().all().extract().response();
     }
 
     public Response batchDelete(List<String> useridList) {
-        reset();
         HashMap<String, Object> map = new HashMap<>();
         map.put("useridlist", useridList);
         String body = template("/data/com/testerhome/hogwarts/wework/contcat/useridlist.json", map);
-        return requestSpecification.body(body)
+        return getDefaultRequestSpecification().body(body)
                 .when().post("https://qyapi.weixin.qq.com/cgi-bin/user/batchdelete")
                 .then().log().all().extract().response();
     }
 
     public Response simpleList(String department_id, String fetch_child){
-        reset();
-        return requestSpecification
+        return getDefaultRequestSpecification()
                 .queryParam("department_id",department_id)
                 .queryParam("fetch_child",fetch_child)
                 .when().get("https://qyapi.weixin.qq.com/cgi-bin/user/simplelist")
@@ -63,8 +57,7 @@ public class Member extends Contact {
     }
 
     public Response list(String department_id, String fetch_child){
-        reset();
-        return requestSpecification
+        return getDefaultRequestSpecification()
                 .queryParam("department_id",department_id)
                 .queryParam("fetch_child",fetch_child)
                 .when().get("https://qyapi.weixin.qq.com/cgi-bin/user/list")
@@ -72,21 +65,19 @@ public class Member extends Contact {
     }
 
     public Response convertToOpenid1(String userid) {
-        reset();
         HashMap<String, Object> map = new HashMap<>();
         map.put("userid", userid);
         String body = template("/data/com/testerhome/hogwarts/wework/contcat/converttoopenid1.json", map);
-        return requestSpecification.body(body)
+        return getDefaultRequestSpecification().body(body)
                 .when().post("https://qyapi.weixin.qq.com/cgi-bin/user/convert_to_openid")
                 .then().log().all().extract().response();
     }
 
     public Response convertToOpenid2(String openid) {
-        reset();
         HashMap<String, Object> map = new HashMap<>();
         map.put("openid", openid);
         String body = template("/data/com/testerhome/hogwarts/wework/contcat/converttoopenid2.json", map);
-        return requestSpecification.body(body)
+        return getDefaultRequestSpecification().body(body)
                 .when().post("https://qyapi.weixin.qq.com/cgi-bin/user/convert_to_openid")
                 .then().log().all().extract().response();
     }
@@ -97,9 +88,8 @@ public class Member extends Contact {
     }
 
     public Response invite(HashMap<String, Object> map){
-        reset();
         String body = template("/data/com/testerhome/hogwarts/wework/contcat/batchinvite.json", map);
-        return requestSpecification.body(body)
+        return getDefaultRequestSpecification().body(body)
                 .when().post("https://qyapi.weixin.qq.com/cgi-bin/batch/invite")
                 .then().log().all().extract().response();
     }

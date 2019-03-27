@@ -39,9 +39,9 @@ class DepartmentTest {
 
     @Test
     void creat() {
-        department.creat("YvanSB1", "1");
+        department.create("YvanSB1", "1");
         // 断言添加相同部门会报错，状态后面也需要管理起来
-        department.creat("YvanSB1", "1").then().body("errcode", equalTo(60008));
+        department.create("YvanSB1", "1").then().body("errcode", equalTo(60008));
     }
 
     @Test
@@ -52,26 +52,26 @@ class DepartmentTest {
                 put("parenid", "1");
             }
         };
-        department.creat(map).then().body("errcode", equalTo(0));
+        department.create(map).then().body("errcode", equalTo(0));
     }
 
     @Test
     void createWithChinese() {
-        department.creat("测试部门test" + random, "1").then().body("errcode", equalTo(0));
+        department.create("测试部门test" + random, "1").then().body("errcode", equalTo(0));
     }
 
     // 参数化加断言状态码
     @ParameterizedTest
     @CsvFileSource(resources = "/data/com/testerhome/hogwarts/wework/contcat/createWithDup.csv")
     void createWithDup(String name, Integer expectCode){
-        department.creat(name+random,"1").then().body("errcode",equalTo(0));
-        department.creat(name+random,"1").then().body("errcode",equalTo(expectCode));
+        department.create(name+random,"1").then().body("errcode",equalTo(0));
+        department.create(name+random,"1").then().body("errcode",equalTo(expectCode));
     }
 
     @Test
     void update() {
         String nameOld = "testUpdate1" + random;
-        department.creat(nameOld, "1").then().body("errcode", equalTo(0));
+        department.create(nameOld, "1").then().body("errcode", equalTo(0));
         Integer integerId = department.list("").path("department.find{ it.name=='" + nameOld + "' }.id");
         String id = String.valueOf(integerId);
         department.update(id, "testUpdate2中午" + random).then().body("errcode", equalTo(0));
@@ -82,7 +82,7 @@ class DepartmentTest {
      */
     @Test
     void update2() {
-        department.creat("testUpdate" + random, "1", random).then().body("errcode", equalTo(0));
+        department.create("testUpdate" + random, "1", random).then().body("errcode", equalTo(0));
         department.update(random, "testUpdate" + random).then().body("errcode", equalTo(0));
         department.delete(random).then().body("errcode", equalTo(0));
     }
@@ -90,7 +90,7 @@ class DepartmentTest {
     @Test
     void delete() {
         String nameOld = "testDelete1" + random;
-        department.creat(nameOld, "1").then().body("errcode", equalTo(0));
+        department.create(nameOld, "1").then().body("errcode", equalTo(0));
         // 先转换Integer类型再转String，避免出错
         Integer integerId = department.list("").path("department.find{ it.name=='" + nameOld + "' }.id");
         String id = String.valueOf(integerId);
@@ -102,7 +102,7 @@ class DepartmentTest {
      */
     @Test
     void delete2() {
-        department.creat("testDelete" + random, "1", "99").then().body("errcode", equalTo(0));
+        department.create("testDelete" + random, "1", "99").then().body("errcode", equalTo(0));
         department.delete("99").then().body("errcode", equalTo(0));
     }
 

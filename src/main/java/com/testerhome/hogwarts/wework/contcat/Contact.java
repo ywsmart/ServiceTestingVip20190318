@@ -3,6 +3,7 @@ package com.testerhome.hogwarts.wework.contcat;
 import com.testerhome.hogwarts.wework.Api;
 import com.testerhome.hogwarts.wework.Wework;
 import io.restassured.http.ContentType;
+import io.restassured.specification.RequestSpecification;
 
 import static io.restassured.RestAssured.given;
 
@@ -15,27 +16,17 @@ import static io.restassured.RestAssured.given;
 public class Contact extends Api {
     String random = String.valueOf(System.currentTimeMillis());
 
-    // 初始化就自带log和token
-    public Contact() {
-        reset();
-    }
 
-    // 用了requestSpecification之后参数残留需要重置，不是最好的封装
-    public void reset() {
-
-        requestSpecification = given()
-                .log().all()
-                .queryParam("access_token", Wework.getToken())
+    @Override
+    public RequestSpecification getDefaultRequestSpecification(){
+        RequestSpecification requestSpecification =super.getDefaultRequestSpecification();
+        requestSpecification.queryParam("access_token",Wework.getToken())
                 .contentType(ContentType.JSON);
-        //先不断言了
-//                .expect().log().all().statusCode(200)
-
-        // 利用filter
-        requestSpecification.filters((req,res,ctx)->{
+        requestSpecification.filter((req,res,ctx)->{
             // todo: 对请求 响应做封装
 //            req.queryParam("")
             return ctx.next(req,res);
-        })
-        ;
+        });
+        return requestSpecification;
     }
 }
