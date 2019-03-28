@@ -29,7 +29,7 @@ public class Department extends Contact {
     public Response list(String id) {
         HashMap<String, Object> map = new HashMap<String, Object>();
         map.put("id",id);
-        return templateFromYaml("/api/list.yaml",map);
+        return getResponseFromYaml("/api/list.yaml",map);
     }
 
 
@@ -129,7 +129,7 @@ public class Department extends Contact {
      */
     public Response create(HashMap<String, Object> map){
         map.put("_file","/data/com/testerhome/hogwarts/wework/contcat/create.json");
-        return templateFromYaml("/api/create.yaml",map);
+        return getResponseFromYaml("/api/create.yaml",map);
     }
 
     /**
@@ -188,7 +188,7 @@ public class Department extends Contact {
         // 读数据
 //        String body = template("/data/com/testerhome/hogwarts/wework/contcat/create.json",map);
 //        map.put("_body",body);
-        return templateFromYaml("/api/create.yaml",map)
+        return getResponseFromYaml("/api/create.yaml",map)
         ;
     }
 
@@ -246,7 +246,7 @@ public class Department extends Contact {
         map.put("_file","/data/com/testerhome/hogwarts/wework/contcat/update.json");
         map.put("name",name);
         map.put("id",id);
-        return templateFromYaml("/api/update.yaml",map);
+        return getResponseFromYaml("/api/update.yaml",map);
     }
 
     // 待完善，重构update，根据抓包导出的har文件
@@ -295,7 +295,7 @@ public class Department extends Contact {
     public Response delete(String id) {
         HashMap<String, Object> map = new HashMap<>();
         map.put("id",id);
-        return templateFromYaml("/api/delete.yaml",map);
+        return getResponseFromYaml("/api/delete.yaml",map);
     }
 
     // 清理脏数据专用
